@@ -1,5 +1,6 @@
 import { jwtDecrypt } from "../../shared/jwtHelper";
 import { tokenAlive } from "../../shared/jwtHelper";
+import axios from "axios";
 
 
 const state = () => ({
@@ -8,7 +9,7 @@ const state = () => ({
         refreshToken: "",
         tokenExp: "",
         userId: "",
-        userName: "",
+        email: "",
     },
     loginStatus: "",
 });
@@ -58,33 +59,49 @@ const getters = {
 // const actions = {};
 
 const actions = {
+
+
+
+
+
     async login({ commit }, payload) {
-        console.log('payload', payload);
-        const data = {
-            access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3QiLCJzdWIiOjIsImlhdCI6MTYwNDMwOTc0OSwiZXhwIjoxNjA0MzA5ODA5fQ.jHez9kegJ7GT1AO5A2fQp6Dg9A6PBmeiDW1YPaCQoYs",
-            refresh_token: "",
-            userName: payload.userName
+
+        const response = await axios.post("http://127.0.0.1:8000/api/login", payload)
+            .catch((err) => {
+                console.log(err);
+            });
+
+            console.log('response', response.data);
+        if (response.data.status == 'success') {
+            commit("saveTokenData", response.data);
+            commit("setLoginStatu", "success");
+        } else {
+            commit("setLoginStatu", "failed");
         }
-        commit('saveTokenData', data);
-        commit('setLoginStatu', 'success');
-    },
+    }
+
 };
+
+
+
+
+
 // end method
 
 // const mutations = {};
 const mutations = {
     saveTokenData(state, data) {
         console.log(data);
-        localStorage.setItem("access_token", data.access_token);
-        localStorage.setItem("refresh_token", data.refresh_token);
+        localStorage.setItem("access_token", data.authorization.token);
+        localStorage.setItem("refresh_token", data.authorization.token);
 
-        const jwtDecodedValue = jwtDecrypt(data.access_token);
+        const jwtDecodedValue = jwtDecrypt(data.authorization.token);
         const newTokenData = {
-            token: data.access_token,
-            refreshToken: data.refresh_token,
+            token: data.authorization.token,
+            refreshToken: data.authorization.token,
             tokenExp: jwtDecodedValue.exp,
             userId: jwtDecodedValue.sub,
-            userName: data.userName,
+            email: data.user.email,
         };
         state.authData = newTokenData;
     },

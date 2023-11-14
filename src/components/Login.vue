@@ -6,13 +6,13 @@
         <form @submit.prevent="login()">
 
             <div class="mb-3">
-                <label for="txtuserName" class="form-label"> Name</label>
-                <input type="text" class="form-control" aria-describedby="emailHelp" v-model="username" />
+                <label for="txtuserName" class="form-label"> Email</label>
+                <input type="email" class="form-control" aria-describedby="emailHelp" name="email" v-model="email" />
             </div>
 
             <div class="mb-3">
                 <label for="txtPassword" class="form-label">Password</label>
-                <input type="password" class="form-control" v-model="password" />
+                <input type="password" class="form-control" name="password" v-model="password" />
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -32,7 +32,7 @@ export default {
     name: 'LoginVue',
     data() {
         return {
-            username: 'asda',
+            email: '',
             password: ''
         }
     },
@@ -57,9 +57,10 @@ export default {
         // }
 
         async login() {
-            // console.log(this.username)
-            await this.actionLogin({ userName: this.username, password: this.password });
+            await this.actionLogin({ email: this.email, password: this.password });
             if (this.getterLoginStatus === 'success') {
+
+                alert('Successfully Login');
                 this.$router.push("/dashboard");
             } else {
                 alert('failed to login')

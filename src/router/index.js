@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+
 
 import LoignVue from '../components/Login.vue'
 import DashboardvUE from '../components/Dashboard.vue'
@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'ProjectOneHome',
-    component: HomeView,
+    component: DashboardvUE,
     meta: { requiredAuth: false } 
   },
 
